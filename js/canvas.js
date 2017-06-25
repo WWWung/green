@@ -27,17 +27,19 @@ class Hero {
   constructor() {
     this.src = heroImg1;
     this.hat = 0;
-    this.vx = 1;
+    this.vx = 2.5;
     this.vy = 0;
     this.accy = -0.5;
-    this.posx = canvas.width/2;
-    this.posy = canvas.height-300
+    this.w = 120;
+    this.h = 120;
+    this.posx = canvas.width/2-this.w/2;
+    this.posy = canvas.height-this.h;
   };
   draw(ctx){
     if(imgObj.hero1Ready){
       ctx.clearRect(0,0,canvas.width,canvas.height)
       ctx.save();
-      ctx.drawImage(this.src,this.posx,this.posy);
+      ctx.drawImage(this.src,this.posx,this.posy,this.w,this.h);
       ctx.restore();
     }
   }
@@ -45,19 +47,38 @@ class Hero {
 
 class Hat {
   constructor() {
-
+    this.w = 53;
+    this.h = 51;
+    this.posx = Math.random()*(canvas.width-this.w);
+    this.posy = -60;
   }
 }
 
 var hero = new Hero();
 start()
 function start() {
+  direction();
+  imgChange();
+  hero.draw(ctx);
+  window.requestAnimationFrame(start);
+}
+
+function direction() {
   if(dir.l){
-    hero.posx--
+    hero.posx-=hero.vx;
   }
   if(dir.r){
-    hero.posx++
+    hero.posx+=hero.vx;
   }
+  if(hero.posx>canvas.width-hero.w){
+    hero.posx=canvas.width-hero.w
+  }
+  if(hero.posx<=0){
+    hero.posx=0
+  }
+}
+
+function imgChange() {
   if(dir.l||dir.r){
     if(hero.src === heroImg2){
       setTimeout(()=>{
@@ -71,8 +92,6 @@ function start() {
   }else{
     hero.src = heroImg2
   }
-  hero.draw(ctx)
-  window.requestAnimationFrame(start)
 }
 
 window.onkeydown = function (e) {
